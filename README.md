@@ -127,6 +127,27 @@ O pi descobre extensões e temas a partir do manifesto `pi` em `package.json`, i
 
 ## Extensões disponíveis
 
+### Context Feedforward
+
+A extensão `context` cria e utiliza uma base `.context/` inspirada no dotcontext:
+
+- `/dotcontext init` analisa a codebase e gera `docs`, `agents` e `skills` já preenchidos com módulos, contratos, fluxos e comandos detectados, preservando edições manuais;
+- `/dotcontext status` mostra o estado da base local;
+- `/dotcontext feed <tarefa>` simula quais documentos seriam carregados;
+- antes de cada trabalho do agente, a extensão seleciona docs/playbooks/skills relevantes e injeta esse feedforward no prompt do turno.
+
+Após criar `.context/skills`, execute `/reload` para o pi descobri-las também como skills nativas.
+
+### Guardrails
+
+A extensão `guardrails` adiciona confirmações explícitas antes de ações sensíveis:
+
+- acesso ou alteração de `.env`/`.env.*`; a exceção liberada por padrão é `.env.example`;
+- escrita em diretórios gerados ou internos como `dist/`, `build/`, `coverage/`, `node_modules/` e `.git/`;
+- comandos destrutivos/sensíveis como `rm`, `rmdir`, `find -delete`, `sudo`, `chmod/chown`, `git clean/reset/restore`, redirecionamentos de escrita, builds com emissão e mutações de dependências.
+
+Sem UI disponível para confirmar, a ação é bloqueada por padrão. Use `/guardrails` para ver um resumo das regras durante a sessão.
+
 ### PREVC
 
 A extensão `prevc` controla o workflow:

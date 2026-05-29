@@ -12,7 +12,8 @@
   ],
   "pi": {
     "extensions": [
-      "./extensions"
+      "./extensions/*.ts",
+      "./extensions/*/index.ts"
     ],
     "themes": [
       "./themes"
