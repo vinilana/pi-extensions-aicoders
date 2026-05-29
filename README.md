@@ -77,6 +77,33 @@ cp extensions/nome-da-extensao.ts .pi/extensions/
 
 Depois, reinicie o pi ou execute `/reload` dentro da sessão.
 
+## Tema AICoders Claude
+
+Este pacote também inclui o tema `aicoders-claude`, uma paleta escura,
+minimalista e inspirada na experiência limpa do Claude Code.
+
+Após instalar ou carregar o pacote, selecione o tema pelo menu interativo:
+
+```bash
+/settings
+```
+
+Ou configure diretamente no `settings.json` do pi:
+
+```json
+{
+  "theme": "aicoders-claude"
+}
+```
+
+Para testar a partir de um clone local sem instalar:
+
+```bash
+pi -e .
+```
+
+Em seguida, abra `/settings` e escolha `aicoders-claude`.
+
 ## Atualizar, listar e remover
 
 ```bash
@@ -90,11 +117,12 @@ pi remove git:github.com/aicoders-academy/pi-extensions-aicoders
 ```text
 .
 ├── extensions/      # Extensões TypeScript do pi
+├── themes/          # Temas JSON para a TUI do pi
 ├── README.md        # Documentação do projeto
 └── package.json     # Manifesto do pacote pi
 ```
 
-O pi descobre extensões automaticamente a partir de `extensions/` ou do manifesto `pi.extensions` em `package.json`.
+O pi descobre extensões e temas a partir do manifesto `pi` em `package.json`, incluindo `pi.extensions` e `pi.themes`.
 
 
 ## Extensões disponíveis
