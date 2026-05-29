@@ -1,0 +1,333 @@
+{
+  "generatedAt": "2026-05-29T14:37:00.169Z",
+  "generator": "aicoders-context-extension",
+  "project": {
+    "name": "@aicoders-academy/pi-extensions",
+    "description": "Extensões oficiais da aicoders.academy para a comunidade do pi coding agent.",
+    "type": "pi-extension",
+    "primaryLanguage": "TypeScript",
+    "packageManager": "npm",
+    "reasoning": [
+      "pi package manifest or pi extension/theme keywords detected"
+    ],
+    "keywords": [
+      "pi-package",
+      "pi-extension",
+      "aicoders",
+      "aicoders-academy"
+    ]
+  },
+  "scripts": {},
+  "dependencies": [
+    "@earendil-works/pi-ai",
+    "@earendil-works/pi-coding-agent",
+    "typebox"
+  ],
+  "entryPoints": [
+    "./extensions/*.ts",
+    "./extensions/*/index.ts",
+    "./themes",
+    "README.md",
+    "extensions/context/index.ts",
+    "extensions/guardrails/index.ts",
+    "extensions/prevc/index.ts",
+    "package.json"
+  ],
+  "piManifest": {
+    "extensions": [
+      "./extensions/*.ts",
+      "./extensions/*/index.ts"
+    ],
+    "themes": [
+      "./themes"
+    ]
+  },
+  "readme": {
+    "summary": [
+      "Repositório open source oficial da aicoders.academy com extensões para a comunidade do pi coding agent.",
+      "⚠️ Segurança: extensões do pi executam código na sua máquina com as permissões do seu usuário. Instale apenas extensões de fontes confiáveis e revise o código antes de usar."
+    ],
+    "headings": [
+      "AICoders Academy · Pi Extensions",
+      "Pré-requisitos",
+      "Instalação rápida",
+      "Testar sem instalar",
+      "Instalar a partir de um clone local",
+      "Instalar uma extensão manualmente",
+      "Tema AICoders Claude",
+      "Atualizar, listar e remover",
+      "Estrutura do repositório",
+      "Extensões disponíveis",
+      "Context Feedforward",
+      "Guardrails",
+      "PREVC",
+      "Contribuindo",
+      "Licença"
+    ]
+  },
+  "modules": [
+    {
+      "path": "extensions/prevc",
+      "role": "PREVC workflow extension: manages plan/review/execute/validate/confirm state, tools, events and git confirmation.",
+      "files": [
+        "extensions/prevc/adapters/git.ts",
+        "extensions/prevc/adapters/guardrails.ts",
+        "extensions/prevc/adapters/session.ts",
+        "extensions/prevc/adapters/tools.ts",
+        "extensions/prevc/adapters/ui.ts",
+        "extensions/prevc/application/register-command.ts",
+        "extensions/prevc/application/register-events.ts",
+        "extensions/prevc/application/register-tool.ts",
+        "extensions/prevc/application/workflow-service.ts",
+        "extensions/prevc/domain/constants.ts",
+        "extensions/prevc/domain/format.ts",
+        "extensions/prevc/domain/state.ts"
+      ],
+      "highlights": [
+        "14 source file(s)",
+        "2 documentation file(s)",
+        "entry point(s): extensions/prevc/index.ts",
+        "contracts: custom session message prevc-context, LLM tool prevc_workflow, pi event hook before_agent_start, pi event hook session_start, pi event hook tool_call"
+      ]
+    },
+    {
+      "path": "extensions/guardrails",
+      "role": "Guardrails extension: blocks or confirms sensitive file, shell, git and package operations.",
+      "files": [
+        "extensions/guardrails/index.ts",
+        "extensions/guardrails/rules.ts"
+      ],
+      "highlights": [
+        "2 source file(s)",
+        "entry point(s): extensions/guardrails/index.ts",
+        "contracts: custom session message aicoders-guardrails-context, pi event hook before_agent_start, pi event hook tool_call, pi event hook user_bash, slash command /guardrails"
+      ]
+    },
+    {
+      "path": "extensions/context",
+      "role": "AICoders Context/dotcontext extension: analyzes the repository, generates .context knowledge files and injects selected feedforward context.",
+      "files": [
+        "extensions/context/index.ts"
+      ],
+      "highlights": [
+        "1 source file(s)",
+        "entry point(s): extensions/context/index.ts",
+        "contracts: CLI flag --dotcontext-feedforward, custom session message aicoders-context-feedforward, pi event hook before_agent_start, pi event hook resources_discover, slash command /dotcontext"
+      ]
+    },
+    {
+      "path": "project-root",
+      "role": "Package metadata, README and top-level documentation for installing and loading the pi package.",
+      "files": [
+        "package.json",
+        "README.md",
+        "THEME-AICODERS-CLAUDE.md"
+      ],
+      "highlights": [
+        "2 documentation file(s)",
+        "entry point(s): README.md, package.json"
+      ]
+    },
+    {
+      "path": "themes",
+      "role": "Theme assets discoverable by pi for the terminal UI.",
+      "files": [
+        "themes/aicoders-claude.json"
+      ],
+      "highlights": []
+    }
+  ],
+  "publicContracts": [
+    {
+      "kind": "CLI flag",
+      "name": "--dotcontext-feedforward",
+      "location": "extensions/context/index.ts",
+      "detail": "Inject .context docs/agents/skills before each agent turn"
+    },
+    {
+      "kind": "custom session message",
+      "name": "aicoders-context-feedforward",
+      "location": "extensions/context/index.ts",
+      "detail": "Custom message type emitted into the pi session."
+    },
+    {
+      "kind": "custom session message",
+      "name": "aicoders-guardrails-context",
+      "location": "extensions/guardrails/index.ts",
+      "detail": "Custom message type emitted into the pi session."
+    },
+    {
+      "kind": "custom session message",
+      "name": "prevc-context",
+      "location": "extensions/prevc/application/register-events.ts",
+      "detail": "Custom message type emitted into the pi session."
+    },
+    {
+      "kind": "LLM tool",
+      "name": "prevc_workflow",
+      "location": "extensions/prevc/application/register-tool.ts",
+      "detail": "Registra e avança etapas do workflow PREVC: P planejar, R revisar, E executar, V validar, C confirmar/commit."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "before_agent_start",
+      "location": "extensions/context/index.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "before_agent_start",
+      "location": "extensions/guardrails/index.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "before_agent_start",
+      "location": "extensions/prevc/application/register-events.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "resources_discover",
+      "location": "extensions/context/index.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "session_start",
+      "location": "extensions/prevc/application/register-events.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "tool_call",
+      "location": "extensions/guardrails/index.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "tool_call",
+      "location": "extensions/prevc/application/register-events.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi event hook",
+      "name": "user_bash",
+      "location": "extensions/guardrails/index.ts",
+      "detail": "Extension subscribes to this pi lifecycle/event hook."
+    },
+    {
+      "kind": "pi extension entry",
+      "name": "./extensions/*.ts",
+      "location": "package.json",
+      "detail": "Declared in package.json pi.extensions."
+    },
+    {
+      "kind": "pi extension entry",
+      "name": "./extensions/*/index.ts",
+      "location": "package.json",
+      "detail": "Declared in package.json pi.extensions."
+    },
+    {
+      "kind": "pi theme entry",
+      "name": "./themes",
+      "location": "package.json",
+      "detail": "Declared in package.json pi.themes."
+    },
+    {
+      "kind": "slash command",
+      "name": "/dotcontext",
+      "location": "extensions/context/index.ts",
+      "detail": "Inicializa e inspeciona o contexto .context da AICoders"
+    },
+    {
+      "kind": "slash command",
+      "name": "/guardrails",
+      "location": "extensions/guardrails/index.ts",
+      "detail": "Mostra as regras de segurança dos guardrails AICoders"
+    },
+    {
+      "kind": "slash command",
+      "name": "/prevc",
+      "location": "extensions/prevc/application/register-command.ts",
+      "detail": "Controla o workflow PREVC (P planeja, R revisa, E executa, V valida, C confirma/commit)"
+    }
+  ],
+  "securitySignals": [
+    "Guardrails extension protects .env files, generated/internal directories and destructive shell/package/git operations.",
+    "The code intercepts tool calls or user shell commands; fail-safe behavior should block when explicit approval is unavailable.",
+    "Custom LLM tools are public agent capabilities and must validate inputs, preserve state shape and avoid unintended side effects."
+  ],
+  "dataSignals": [
+    "Slash commands receive user text, inspect repository files and report through ctx.ui.notify.",
+    "before_agent_start hooks append contextual instructions/messages to the next agent turn.",
+    "resources_discover exposes generated .context skills/prompts/themes to pi resource loading.",
+    "/dotcontext init writes .context docs, agent playbooks, skills and codebase-map.json from repository analysis.",
+    "PREVC stores workflow state in session entries and can commit during the confirmation stage."
+  ],
+  "topLevelEntries": [
+    ".git",
+    ".gitignore",
+    ".pi",
+    "README.md",
+    "THEME-AICODERS-CLAUDE.md",
+    "extensions",
+    "package.json",
+    "themes"
+  ],
+  "sourceFiles": [
+    "extensions/context/index.ts",
+    "extensions/guardrails/index.ts",
+    "extensions/guardrails/rules.ts",
+    "extensions/prevc/adapters/git.ts",
+    "extensions/prevc/adapters/guardrails.ts",
+    "extensions/prevc/adapters/session.ts",
+    "extensions/prevc/adapters/tools.ts",
+    "extensions/prevc/adapters/ui.ts",
+    "extensions/prevc/application/register-command.ts",
+    "extensions/prevc/application/register-events.ts",
+    "extensions/prevc/application/register-tool.ts",
+    "extensions/prevc/application/workflow-service.ts",
+    "extensions/prevc/domain/constants.ts",
+    "extensions/prevc/domain/format.ts",
+    "extensions/prevc/domain/state.ts",
+    "extensions/prevc/domain/types.ts",
+    "extensions/prevc/index.ts"
+  ],
+  "testFiles": [],
+  "documentationFiles": [
+    "extensions/prevc/PREVC-ARCHITECTURE.md",
+    "extensions/prevc/PREVC-WORKFLOW.md",
+    "README.md",
+    "THEME-AICODERS-CLAUDE.md"
+  ],
+  "configFiles": [
+    "package.json"
+  ],
+  "files": [
+    ".gitignore",
+    "extensions/context/index.ts",
+    "extensions/guardrails/index.ts",
+    "extensions/guardrails/rules.ts",
+    "extensions/prevc/adapters/git.ts",
+    "extensions/prevc/adapters/guardrails.ts",
+    "extensions/prevc/adapters/session.ts",
+    "extensions/prevc/adapters/tools.ts",
+    "extensions/prevc/adapters/ui.ts",
+    "extensions/prevc/application/register-command.ts",
+    "extensions/prevc/application/register-events.ts",
+    "extensions/prevc/application/register-tool.ts",
+    "extensions/prevc/application/workflow-service.ts",
+    "extensions/prevc/domain/constants.ts",
+    "extensions/prevc/domain/format.ts",
+    "extensions/prevc/domain/state.ts",
+    "extensions/prevc/domain/types.ts",
+    "extensions/prevc/index.ts",
+    "extensions/prevc/PREVC-ARCHITECTURE.md",
+    "extensions/prevc/PREVC-WORKFLOW.md",
+    "package.json",
+    "README.md",
+    "THEME-AICODERS-CLAUDE.md",
+    "themes/aicoders-claude.json"
+  ]
+}
