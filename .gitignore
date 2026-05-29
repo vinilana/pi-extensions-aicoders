@@ -1,0 +1,27 @@
+# Dependências
+node_modules/
+
+# Ambiente local
+.env
+.env.*
+!.env.example
+
+# Estado local do pi/agent
+.pi/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build/coverage
+/dist/
+/build/
+/coverage/
+
+# Sistema/editor
+.DS_Store
+.vscode/
+.idea/

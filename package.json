@@ -1,0 +1,22 @@
+{
+  "name": "@aicoders-academy/pi-extensions",
+  "version": "0.1.0",
+  "description": "Extensões oficiais da aicoders.academy para a comunidade do pi coding agent.",
+  "license": "UNLICENSED",
+  "type": "module",
+  "keywords": [
+    "pi-package",
+    "pi-extension",
+    "aicoders",
+    "aicoders-academy"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions"
+    ]
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "typebox": "*"
+  }
+}
