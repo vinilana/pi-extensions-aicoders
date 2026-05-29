@@ -7,7 +7,7 @@ A implementação está organizada em componentes menores seguindo uma arquitetu
 - **P · Planejar**: investiga em modo read-only, pergunta se o usuário quer um arquivo `.md` como output final e produz uma SPEC completa (contexto, escopo, artefatos, requisitos, design técnico, etapas de execução, validação, riscos) antes de registrar o plano, sem alterar arquivos.
 - **R · Revisar**: plano é aprovado ou volta para refinamento.
 - **E · Executar**: implementa somente a fase atual.
-- **V · Validar**: roda checks/testes da fase atual; se falhar, volta para E.
+- **V · Validar**: roda checks/testes da fase atual e usa `judges_evaluate` para confrontar SPEC/plano contra evidências; se falhar, volta para E com a SPEC pendente.
 - **C · Confirmar/Commit**: confirma evidências e cria commit da fase, então avança para a próxima fase.
 
 ## SPEC da etapa P
@@ -49,7 +49,7 @@ A extensão registra a ferramenta `prevc_workflow`, usada pelo agente para avan�
 
 - P/R bloqueiam `edit`, `write` e comandos bash não-read-only.
 - E permite edição, mas bloqueia `git commit/tag/push`.
-- V bloqueia edição e comandos mutáveis.
+- V bloqueia edição e comandos mutáveis, mas mantém `judges_evaluate` ativo para validação independente da fase.
 - C bloqueia edição e só permite bash relacionado a `git status/diff/add/commit/rev-parse`.
 
 Recarregue o pi com `/reload` após criar ou alterar a extensão.

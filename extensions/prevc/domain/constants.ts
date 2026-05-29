@@ -2,9 +2,10 @@ import type { Stage } from "./types.ts";
 
 export const CUSTOM_TYPE = "prevc-workflow";
 export const TOOL_NAME = "prevc_workflow";
+export const JUDGES_TOOL_NAME = "judges_evaluate";
 
-export const READ_ONLY_TOOLS = ["read", "bash", "grep", "find", "ls", TOOL_NAME];
-export const DEFAULT_EXECUTE_TOOLS = ["read", "bash", "edit", "write", "grep", "find", "ls", TOOL_NAME];
+export const READ_ONLY_TOOLS = ["read", "bash", "grep", "find", "ls", TOOL_NAME, JUDGES_TOOL_NAME];
+export const DEFAULT_EXECUTE_TOOLS = ["read", "bash", "edit", "write", "grep", "find", "ls", TOOL_NAME, JUDGES_TOOL_NAME];
 
 export const STAGE_LABEL: Record<Stage, string> = {
   idle: "inativo",
@@ -58,10 +59,11 @@ export const STAGE_INSTRUCTIONS: Record<Exclude<Stage, "idle">, string> = {
 - Ao terminar a implementação da fase, chame prevc_workflow action="mark_executed" com evidência objetiva.`,
   V: `Etapa V — Validar a fase:
 - Rode checks/testes/revisões relevantes para a fase atual.
-- Não altere arquivos nesta etapa; se encontrar falha, chame prevc_workflow action="mark_validated" com passed=false para voltar à execução.
-- Se passou, chame prevc_workflow action="mark_validated" com passed=true, checks e evidência.`,
+- Chame judges_evaluate confrontando a SPEC/plano da fase atual com o resultado, evidências e checks executados antes de aceitar passed=true.
+- Não altere arquivos nesta etapa; se encontrar falha ou se judges_evaluate retornar passed=false, chame prevc_workflow action="mark_validated" com passed=false para voltar à execução usando a pendingSpec dos judges.
+- Se checks e judges_evaluate passaram, chame prevc_workflow action="mark_validated" com passed=true, checks e evidência.`,
   C: `Etapa C — Confirmar/Commit:
-- Resuma o que foi executado e validado para a fase atual.
+- Resuma o que foi executado, validado e aprovado pelos judges para a fase atual.
 - Confirme a fase e, quando houver mudanças versionáveis, faça commit apenas nesta etapa.
 - Use prevc_workflow action="mark_confirmed" com evidence e commitMessage.`,
   done: `Workflow PREVC concluído:

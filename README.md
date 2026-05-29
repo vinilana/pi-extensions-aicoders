@@ -146,7 +146,40 @@ A extensão `guardrails` adiciona confirmações explícitas antes de ações se
 - escrita em diretórios gerados ou internos como `dist/`, `build/`, `coverage/`, `node_modules/` e `.git/`;
 - comandos destrutivos/sensíveis como `rm`, `rmdir`, `find -delete`, `sudo`, `chmod/chown`, `git clean/reset/restore`, redirecionamentos de escrita, builds com emissão e mutações de dependências.
 
-Sem UI disponível para confirmar, a ação é bloqueada por padrão. Use `/guardrails` para ver um resumo das regras durante a sessão.
+Na confirmação interativa, a ação pode ser liberada uma vez, bloqueada ou marcada com **Sempre permitir esta ação**. A opção "sempre permitir" memoriza a decisão exata na sessão atual e libera automaticamente repetições iguais.
+
+Use `/guardrails` para ver um resumo das regras durante a sessão, `/guardrails list` para listar permissões lembradas e `/guardrails clear` para limpar a memória. Sem UI disponível para confirmar e sem permissão lembrada, a ação é bloqueada por padrão.
+
+### Judges
+
+A extensão `judges` valida se uma tarefa realmente atende à SPEC inicial antes de ser considerada concluída:
+
+- registra a ferramenta `judges_evaluate`, que compara `spec`, `result` e evidências;
+- executa judges configuráveis por prompt e, opcionalmente, scripts/testes locais;
+- retorna `passed`, pendências e uma `pendingSpec` para continuar o trabalho quando algo faltar;
+- pode avaliar automaticamente respostas finais que alegam conclusão;
+- integra com o PREVC na etapa **V**, antes de aceitar `mark_validated passed=true`.
+
+Configuração opcional em `~/.pi/agent/judges.json`, `.pi/judges.json` ou `judges.config.json`:
+
+```json
+{
+  "enabled": true,
+  "model": "active",
+  "allowScripts": true,
+  "confirmScripts": true,
+  "auto": { "enabled": true, "mode": "claim", "onFail": "followUp" },
+  "judges": [
+    {
+      "id": "spec-compliance",
+      "promptFile": ".pi/judges/spec-compliance.md",
+      "scripts": [{ "name": "tests", "command": "npm test", "timeoutMs": 120000 }]
+    }
+  ]
+}
+```
+
+Por segurança, scripts configurados só rodam com `allowScripts=true` e podem exigir confirmação na UI. Use `/judges status` para inspecionar a configuração carregada.
 
 ### PREVC
 
@@ -155,7 +188,7 @@ A extensão `prevc` controla o workflow:
 - **P** — Planejar
 - **R** — Revisar/aprovar
 - **E** — Executar uma fase por vez
-- **V** — Validar com evidências
+- **V** — Validar com evidências e `judges_evaluate`
 - **C** — Confirmar e commitar quando aplicável
 
 A implementação oficial está em `extensions/prevc/` e registra:
@@ -163,6 +196,7 @@ A implementação oficial está em `extensions/prevc/` e registra:
 - comando `/prevc`
 - ferramenta `prevc_workflow`
 - guardrails para limitar ferramentas por etapa
+- integração com `judges_evaluate` na etapa V
 - persistência do estado do workflow na sessão
 
 Na etapa **P**, o agente deve apresentar uma **SPEC PREVC** detalhada com

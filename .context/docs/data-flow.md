@@ -26,6 +26,7 @@ status: generated
 - Context extension classifies tasks, selects docs/agents/skills and truncates loaded files to fit the system prompt budget.
 - Guardrails evaluate paths and shell commands into allow/block decisions.
 - PREVC converts workflow tool actions into persisted stage transitions and validation evidence.
+- Judges loads optional JSON config, captures an active SPEC, runs prompt judges and optional scripts, then aggregates passed/missing/pendingSpec.
 
 ## Outputs and Side Effects
 
@@ -34,9 +35,11 @@ status: generated
 - UI notifications for command results and status previews.
 - Blocked tool/user-bash results when explicit permission is not granted.
 - Optional git commits during PREVC confirmation.
+- Judge evaluation results as tool output, custom session messages and custom session state entries.
 
 ## Persistence
 
 - .context/ files persist generated knowledge in the target repository.
 - PREVC workflow state is reconstructed from custom session entries.
+- Judges active SPEC and last evaluation are reconstructed from custom session entries.
 - Theme JSON is static package data discovered by pi.
