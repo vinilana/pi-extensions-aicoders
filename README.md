@@ -101,7 +101,7 @@ O pi descobre extensões automaticamente a partir de `extensions/` ou do manifes
 
 ### PREVC
 
-A extensão `prevc` orienta o agente a trabalhar com o workflow:
+A extensão `prevc` controla o workflow:
 
 - **P** — Planejar
 - **R** — Revisar/aprovar
@@ -109,9 +109,16 @@ A extensão `prevc` orienta o agente a trabalhar com o workflow:
 - **V** — Validar com evidências
 - **C** — Confirmar e commitar quando aplicável
 
-Na etapa de planejamento, o agente deve apresentar uma **Spec PREVC**
-detalhada para o usuário, incluindo objetivo, escopo, artefatos, etapas de
-execução, validações, critérios de aceite e riscos.
+A implementação oficial está em `extensions/prevc/` e registra:
+
+- comando `/prevc`
+- ferramenta `prevc_workflow`
+- guardrails para limitar ferramentas por etapa
+- persistência do estado do workflow na sessão
+
+Na etapa **P**, o agente deve apresentar uma **SPEC PREVC** detalhada com
+objetivo, escopo, estado atual, requisitos, design técnico, artefatos,
+etapas de execução, validações, critérios de aceite e riscos.
 
 A spec também deve perguntar explicitamente:
 
@@ -121,13 +128,16 @@ Se a resposta for sim, o agente deve confirmar ou sugerir o caminho/nome do
 arquivo Markdown. Se for não, deve registrar que não haverá artefato Markdown
 final.
 
-Comando auxiliar:
+Uso básico:
 
 ```bash
-/prevc-spec
+/prevc start <objetivo>
+/prevc status
+/prevc approve
+/prevc reject <motivo>
+/prevc commit <mensagem>
+/prevc stop
 ```
-
-Esse comando mostra o modelo de spec usado pela extensão.
 
 ## Contribuindo
 
