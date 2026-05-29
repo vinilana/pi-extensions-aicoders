@@ -96,6 +96,39 @@ pi remove git:github.com/aicoders-academy/pi-extensions-aicoders
 
 O pi descobre extensões automaticamente a partir de `extensions/` ou do manifesto `pi.extensions` em `package.json`.
 
+
+## Extensões disponíveis
+
+### PREVC
+
+A extensão `prevc` orienta o agente a trabalhar com o workflow:
+
+- **P** — Planejar
+- **R** — Revisar/aprovar
+- **E** — Executar uma fase por vez
+- **V** — Validar com evidências
+- **C** — Confirmar e commitar quando aplicável
+
+Na etapa de planejamento, o agente deve apresentar uma **Spec PREVC**
+detalhada para o usuário, incluindo objetivo, escopo, artefatos, etapas de
+execução, validações, critérios de aceite e riscos.
+
+A spec também deve perguntar explicitamente:
+
+> Você quer que eu gere um arquivo `.md` como output ao final?
+
+Se a resposta for sim, o agente deve confirmar ou sugerir o caminho/nome do
+arquivo Markdown. Se for não, deve registrar que não haverá artefato Markdown
+final.
+
+Comando auxiliar:
+
+```bash
+/prevc-spec
+```
+
+Esse comando mostra o modelo de spec usado pela extensão.
+
 ## Contribuindo
 
 Contribuições da comunidade são bem-vindas. Antes de enviar uma extensão:
