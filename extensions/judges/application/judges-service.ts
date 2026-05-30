@@ -3,6 +3,7 @@ import { loadJudgesConfig } from "../adapters/config.ts";
 import { runPromptJudge } from "../adapters/model.ts";
 import { persistJudgesState } from "../adapters/session.ts";
 import { runJudgeScripts } from "../adapters/scripts.ts";
+import { clearJudgesUi, failJudgesEvaluationUi, finishJudgesEvaluationUi, startJudgesEvaluationUi } from "../adapters/ui.ts";
 import { cloneState, createEvaluationId, createInitialState } from "../domain/state.ts";
 import type { JudgeDefinition, JudgesConfig, JudgesEvaluationInput, JudgesEvaluationResult, JudgesState } from "../domain/types.ts";
 
@@ -71,7 +72,7 @@ export class JudgesService {
   clear(ctx: ExtensionContext): void {
     this.state = createInitialState();
     this.persistState();
-    if (ctx.hasUI) ctx.ui.setStatus("judges", undefined);
+    clearJudgesUi(ctx);
   }
 
   private persistState(): void {
@@ -102,52 +103,57 @@ export class JudgesService {
       throw new Error("Nenhum judge habilitado corresponde à seleção solicitada.");
     }
 
-    if (ctx.hasUI) ctx.ui.setStatus("judges", "⚖️ avaliando...");
+    startJudgesEvaluationUi(ctx, judges.map((judge) => judge.id));
 
-    const scriptResults = input.runScripts === false ? [] : await runJudgeScripts(this.pi, ctx, config, judges, signal);
-    const promptResults = [];
-    for (const judge of judges) {
-      promptResults.push(await runPromptJudge(ctx, config, judge, spec, resultText, input.evidence, scriptResults, signal));
+    try {
+      const scriptResults = input.runScripts === false ? [] : await runJudgeScripts(this.pi, ctx, config, judges, signal);
+      const promptResults = [];
+      for (const judge of judges) {
+        promptResults.push(await runPromptJudge(ctx, config, judge, spec, resultText, input.evidence, scriptResults, signal));
+      }
+
+      const scriptFailures = scriptResults
+        .filter((script) => script.status !== "passed")
+        .map((script) => `${script.judgeId}/${script.name} não passou (${script.status}${script.error ? `: ${script.error}` : ""}).`);
+      const missing = uniqueNonEmpty([...promptResults.flatMap((prompt) => prompt.missing), ...scriptFailures]);
+      const checks = uniqueNonEmpty([...promptResults.flatMap((prompt) => prompt.checks), ...summarizeScripts(scriptResults)]);
+      const promptPassed = promptResults.every((prompt) => prompt.passed);
+      const scriptsPassed = scriptResults.every((script) => script.status === "passed");
+      const passed = promptPassed && scriptsPassed;
+      const pendingSpec = passed
+        ? ""
+        : promptResults.find((prompt) => prompt.pendingSpec?.trim())?.pendingSpec?.trim() || fallbackPendingSpec(missing, spec);
+      const summary = uniqueNonEmpty(promptResults.map((prompt) => prompt.summary)).join("\n") ||
+        (passed ? "Todos os judges aprovaram a entrega." : "A entrega tem pendências contra a SPEC.");
+      const hasErrors = promptResults.some((prompt) => prompt.status === "error") || scriptResults.some((script) => script.status === "error");
+
+      const evaluation: JudgesEvaluationResult = {
+        id: createEvaluationId(),
+        passed,
+        status: passed ? "passed" : hasErrors ? "error" : "failed",
+        source: input.source,
+        spec,
+        result: resultText,
+        summary,
+        missing,
+        pendingSpec,
+        promptResults,
+        scriptResults,
+        checks,
+        createdAt: new Date().toISOString(),
+      };
+
+      this.state.activeSpec = spec;
+      this.state.lastResult = evaluation;
+      this.persistState();
+      this.pi.events.emit("aicoders:judges:evaluated", evaluation);
+      finishJudgesEvaluationUi(ctx, evaluation);
+
+      return evaluation;
+    } catch (error) {
+      failJudgesEvaluationUi(ctx, error);
+      throw error;
     }
-
-    const scriptFailures = scriptResults
-      .filter((script) => script.status !== "passed")
-      .map((script) => `${script.judgeId}/${script.name} não passou (${script.status}${script.error ? `: ${script.error}` : ""}).`);
-    const missing = uniqueNonEmpty([...promptResults.flatMap((prompt) => prompt.missing), ...scriptFailures]);
-    const checks = uniqueNonEmpty([...promptResults.flatMap((prompt) => prompt.checks), ...summarizeScripts(scriptResults)]);
-    const promptPassed = promptResults.every((prompt) => prompt.passed);
-    const scriptsPassed = scriptResults.every((script) => script.status === "passed");
-    const passed = promptPassed && scriptsPassed;
-    const pendingSpec = passed
-      ? ""
-      : promptResults.find((prompt) => prompt.pendingSpec?.trim())?.pendingSpec?.trim() || fallbackPendingSpec(missing, spec);
-    const summary = uniqueNonEmpty(promptResults.map((prompt) => prompt.summary)).join("\n") ||
-      (passed ? "Todos os judges aprovaram a entrega." : "A entrega tem pendências contra a SPEC.");
-    const hasErrors = promptResults.some((prompt) => prompt.status === "error") || scriptResults.some((script) => script.status === "error");
-
-    const evaluation: JudgesEvaluationResult = {
-      id: createEvaluationId(),
-      passed,
-      status: passed ? "passed" : hasErrors ? "error" : "failed",
-      source: input.source,
-      spec,
-      result: resultText,
-      summary,
-      missing,
-      pendingSpec,
-      promptResults,
-      scriptResults,
-      checks,
-      createdAt: new Date().toISOString(),
-    };
-
-    this.state.activeSpec = spec;
-    this.state.lastResult = evaluation;
-    this.persistState();
-    this.pi.events.emit("aicoders:judges:evaluated", evaluation);
-
-    if (ctx.hasUI) ctx.ui.setStatus("judges", passed ? "⚖️ aprovado" : "⚖️ pendente");
-    return evaluation;
   }
 
   shouldAutoEvaluate(config: JudgesConfig, assistantText: string): boolean {

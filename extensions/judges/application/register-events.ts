@@ -24,7 +24,7 @@ function replaceAssistantText(message: any, text: string) {
 }
 
 function shouldSkipAssistantText(text: string): boolean {
-  return !text || text.startsWith("⚖️ Judges") || text.includes("AICODERS_JUDGES_PENDING_SPEC");
+  return !text || text.startsWith("Judges") || text.includes("AICODERS_JUDGES_PENDING_SPEC");
 }
 
 function systemPromptAppendix(): string {
@@ -52,14 +52,14 @@ export function registerJudgesEvents(pi: ExtensionAPI, judges: JudgesService): v
     const content = typeof message.content === "string" ? message.content : JSON.stringify(message.content);
     const firstLine = content.split("\n")[0] ?? "Judges";
     const text = expanded ? content : firstLine;
-    return new Text(theme.fg(content.includes("❌") ? "warning" : "success", text), 0, 0);
+    return new Text(theme.fg(content.includes("pendente") || content.includes("erro") ? "warning" : "success", text), 0, 0);
   });
 
   pi.on("session_start", async (_event, ctx) => {
     const restored = restoreLatestJudgesState(ctx);
     if (restored) judges.replaceState(restored);
     if (ctx.hasUI && judges.getState().lastResult) {
-      ctx.ui.setStatus("judges", judges.getState().lastResult?.passed ? "⚖️ aprovado" : "⚖️ pendente");
+      ctx.ui.setStatus("judges", judges.getState().lastResult?.passed ? "Judges aprovado" : "Judges pendente");
     }
   });
 
