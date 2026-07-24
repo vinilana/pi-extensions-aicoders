@@ -15,7 +15,7 @@ Repositório open source oficial da **aicoders.academy** com extensões para a c
 Quando o repositório estiver publicado no GitHub, instale globalmente com:
 
 ```bash
-pi install git:github.com/aicoders-academy/pi-extensions-aicoders
+pi install git:github.com/vinilana/pi-extensions-aicoders
 ```
 
 Isso adiciona o pacote em `~/.pi/agent/settings.json` e deixa as extensões disponíveis em todos os projetos.
@@ -23,7 +23,7 @@ Isso adiciona o pacote em `~/.pi/agent/settings.json` e deixa as extensões disp
 Para instalar apenas no projeto atual, use `-l`:
 
 ```bash
-pi install -l git:github.com/aicoders-academy/pi-extensions-aicoders
+pi install -l git:github.com/vinilana/pi-extensions-aicoders
 ```
 
 Isso grava em `.pi/settings.json`, permitindo versionar a configuração junto com o projeto.
@@ -33,13 +33,13 @@ Isso grava em `.pi/settings.json`, permitindo versionar a configuração junto c
 Use `-e`/`--extension` para carregar temporariamente:
 
 ```bash
-pi -e git:github.com/aicoders-academy/pi-extensions-aicoders
+pi -e git:github.com/vinilana/pi-extensions-aicoders
 ```
 
 Ou, após clonar o repositório:
 
 ```bash
-git clone https://github.com/aicoders-academy/pi-extensions-aicoders.git
+git clone https://github.com/vinilana/pi-extensions-aicoders.git
 cd pi-extensions-aicoders
 pi -e .
 ```
@@ -47,7 +47,7 @@ pi -e .
 ## Instalar a partir de um clone local
 
 ```bash
-git clone https://github.com/aicoders-academy/pi-extensions-aicoders.git
+git clone https://github.com/vinilana/pi-extensions-aicoders.git
 pi install ./pi-extensions-aicoders
 ```
 
@@ -109,7 +109,7 @@ Em seguida, abra `/settings` e escolha `aicoders-claude`.
 ```bash
 pi list
 pi update --extensions
-pi remove git:github.com/aicoders-academy/pi-extensions-aicoders
+pi remove git:github.com/vinilana/pi-extensions-aicoders
 ```
 
 ## Estrutura do repositório
